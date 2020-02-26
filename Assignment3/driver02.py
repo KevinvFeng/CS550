@@ -1,7 +1,12 @@
 '''
-driver for graph search problem
+Jinqi Cheng     RedID: 819472050 
+
+Hsuan Yu Liu    RedID: 823327369
 '''
 
+'''
+driver for graph search problem
+'''
 from statistics import (mean, stdev)  # Only available in Python 3.4 and newer
 
 from npuzzle import NPuzzle
@@ -11,6 +16,7 @@ from problemsearch import graph_search
 import collections
 import time
 import searchstrategies
+import pandas as pd
 
 from multiprocessing import Process
 
@@ -39,39 +45,54 @@ class Timer:
 
 def driver() :
 
-    numOfBoard = 2
+    numOfBoard = 31
 
-    # dfs_nodes = []
-    # dfs_elapsed = []
-    # dfs_length = []
+    dfs_nodes = []
+    dfs_elapsed = []
+    dfs_length = []
 
     bfs_nodes = []
     bfs_elapsed = []
     bfs_length = []
 
-    # astar_nodes = []
-    # astar_elapsed = []
-    # astar_length = []
+    astar_nodes = []
+    astar_elapsed = []
+    astar_length = []
 
     for _ in range(numOfBoard):
         t = Timer()
         puzzle = NPuzzle(8,g=BreadthFirst.g, h = BreadthFirst.h)
-        # puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
-        # puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
-        result = graph_search(puzzle,verbose=True)
+        result = graph_search(puzzle,verbose=False)
         time_spent = t.elapsed_s()
         bfs_length.append(len(result[0]))
         bfs_nodes.append(result[1])
         bfs_elapsed.append(time_spent)
 
+        t = Timer()
+        puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
+        result = graph_search(puzzle,verbose=False)
+        time_spent = t.elapsed_s()
+        dfs_length.append(len(result[0]))
+        dfs_nodes.append(result[1])
+        dfs_elapsed.append(time_spent)
 
-    print('Length of plan')
-    print('Mean: ',  '{:10}'.format(mean(bfs_length))  ,   ' STD: ', '{:10}'.format(stdev(bfs_length)))
-    print('Number of nodes')
-    print('Mean: ',  '{:10}'.format(mean(bfs_nodes))  ,   ' STD: ', '{:10}'.format(stdev(bfs_nodes)))
-    print('Elapsed time in second')
-    print('Mean: ',  '{:10}'.format(mean(bfs_elapsed))  ,   ' STD: ', '{:10}'.format(stdev(bfs_elapsed)))
+        t = Timer()
+        puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
+        result = graph_search(puzzle,verbose=False)
+        time_spent = t.elapsed_s()
+        astar_length.append(len(result[0]))
+        astar_nodes.append(result[1])
+        astar_elapsed.append(time_spent)
 
+    summary = pd.DataFrame(columns=['{:25}'.format('Measurements'),'{:25}'.format('BFS'), '{:25}'.format('DFS'),'{:25}'.format('A-Star')])
+    summary.loc[0] = ['Length of plan(Mean)', mean(bfs_length),mean(dfs_length),mean(astar_length)]
+    summary.loc[1] = ['Number of nodes(Mean)', mean(bfs_nodes),mean(dfs_nodes),mean(astar_nodes)]
+    summary.loc[2] = ['Elapsed time(Mean)', mean(bfs_elapsed),mean(dfs_elapsed),mean(astar_elapsed)]
+    summary.loc[3] = ['Length of plan(STD)', stdev(bfs_length),stdev(dfs_length),stdev(astar_length)]
+    summary.loc[4] = ['Number of nodes(STD)', stdev(bfs_nodes),stdev(dfs_nodes),stdev(astar_nodes)]
+    summary.loc[5] = ['Elapsed time(STD)', stdev(bfs_elapsed),stdev(dfs_elapsed),stdev(astar_elapsed)]
+    print (summary.to_string(index=False))
+    
 
     # raise NotImplemented
 def driver_strategy(strategy):
@@ -85,9 +106,9 @@ def driver_strategy(strategy):
         if strategy == 0:
             puzzle = NPuzzle(8,g=BreadthFirst.g, h = BreadthFirst.h)
         elif strategy == 1:
-            puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
-        else:
             puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
+        else:
+            puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
         # result = graph_search(puzzle,verbose=True)
         result = graph_search(puzzle)
         time_spent = t.elapsed_s()
@@ -95,13 +116,19 @@ def driver_strategy(strategy):
         nodes.append(result[1])
         elapsed.append(time_spent)
 
+    summary = pd.DataFrame(columns=['{:<30}'.format('Measurements'),'{:15}'.format(strategy_name[strategy])])
+    summary.loc[0] = ['Length of plan(Mean)', mean(length)]
+    summary.loc[1] = ['Number of nodes(Mean)', mean(nodes)]
+    summary.loc[2] = ['Elapsed time(Mean)', mean(elapsed)]
 
-    print('{} Length of plan'.format(strategy_name[strategy]))
-    print('Mean: ',  '{:10}'.format(mean(length))  ,    ' STD: ', '{:10}'.format(stdev(length)))
-    print('{} Number of nodes'.format(strategy_name[strategy]))
-    print('Mean: ',  '{:10}'.format(mean(nodes))  ,     ' STD: ', '{:10}'.format(stdev(nodes)))
-    print('{} Elapsed time in second'.format(strategy_name[strategy]))
-    print('Mean: ',  '{:10}'.format(mean(elapsed))  ,   ' STD: ', '{:10}'.format(stdev(elapsed)))
+    summary.loc[3] = ['Length of plan(STD)', stdev(length)]
+    summary.loc[4] = ['Number of nodes(STD)', stdev(nodes)]
+    summary.loc[5] = ['Elapsed time(STD)', stdev(elapsed)]
+    
+    print(format(strategy_name[strategy]))
+    print (summary.to_string(index=False))
+
+
 def driver_multiprocessing():
     p_bfs = Process(target=driver_strategy, args=(0,))
     p_dfs = Process(target=driver_strategy, args=(1,))
@@ -112,6 +139,7 @@ def driver_multiprocessing():
     p_bfs.join()
     p_dfs.join()
     p_man.join()
+    
 if __name__ == '__main__':
     driver_multiprocessing()
     # driver()

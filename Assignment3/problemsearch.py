@@ -6,7 +6,7 @@ from basicsearch_lib02.searchrep import (Node, print_nodes)
 from basicsearch_lib02.queues import PriorityQueue 
 from explored import Explored
 
-# import time
+import time
 
 def graph_search(problem, verbose=False, debug=False):
     """graph_search(problem, verbose, debug) - Given a problem representation
@@ -69,7 +69,7 @@ def graph_search(problem, verbose=False, debug=False):
     path - list of actions to solve the problem or None if no solution was found
     nodes_explored - Number of nodes explored (dequeued from frontier)
     """
-    # start = time.time()
+    start = time.time()
 
     initial_node = Node(problem, problem.initial)
     node_queue = PriorityQueue(f=lambda x: x.get_f())
@@ -81,6 +81,10 @@ def graph_search(problem, verbose=False, debug=False):
     solved = board.solved()
 
     while(not solved):
+        if debug:
+            print('f: ', node.get_f(), '   h: ', node.get_g(), '  g: ', node.get_h())
+            print(node.state)
+
         newNodes = node.expand(problem)
         #Insert all new nodes into queues and explored
         for newNode in newNodes:
@@ -100,7 +104,7 @@ def graph_search(problem, verbose=False, debug=False):
             board =newNode.state
 
 
-    # second = (time.time() - start)
+    second = (time.time() - start)
     actions = node.path()
     solutions = node.solution()
     if verbose:
@@ -114,9 +118,5 @@ def graph_search(problem, verbose=False, debug=False):
                 else:
                     print("Move {} -  {}".format(k,solutions[k-1]))
                 print(v.state)
-        # for item in actions:
-        #     print(item)
-    # actions = [a_node.action for a_node in node.path() if a_node.action]
-    # return (actions, node_num, second)
-    return (actions, node_num)
+    return (actions, node_num, second)
 #     raise NotImplemented
