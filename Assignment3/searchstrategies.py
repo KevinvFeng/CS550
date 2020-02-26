@@ -50,7 +50,6 @@ class BreadthFirst:
     @classmethod
     def g(cls, parentnode, action, childnode):
         if parentnode:
-            # print('Cost:  ', parentnode.get_g+1)
             return parentnode.get_g()+1
         else:
             return 0
@@ -64,14 +63,9 @@ class DepthFirst:
     "DepthFirst - depth first search"
     @classmethod
     def g(cls, parentnode, action, childnode): #To be h()
-        # max_depth = 20
-        max_depth = 4
+
         if parentnode:
-            if childnode.depth > max_depth:
-                return 0
-                # return -childnode.depth+1
-            else:
-                return -childnode.depth
+            return -childnode.depth
         else:
             return 0
         # return appropritate g value

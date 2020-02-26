@@ -75,7 +75,7 @@ def driver() :
 
     # raise NotImplemented
 def driver_strategy(strategy):
-    numOfBoard = 2
+    numOfBoard = 31
     nodes = []
     elapsed = []
     length = []
