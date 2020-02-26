@@ -39,7 +39,7 @@ class Timer:
 
 def driver() :
 
-    numOfBoard = 31
+    numOfBoard = 2
 
     # dfs_nodes = []
     # dfs_elapsed = []
@@ -55,10 +55,10 @@ def driver() :
 
     for _ in range(numOfBoard):
         t = Timer()
-        # puzzle = NPuzzle(8,g=BreadthFirst.g, h = BreadthFirst.h)
+        puzzle = NPuzzle(8,g=BreadthFirst.g, h = BreadthFirst.h)
         # puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
-        puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
-        result = graph_search(puzzle)
+        # puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
+        result = graph_search(puzzle,verbose=True)
         time_spent = t.elapsed_s()
         bfs_length.append(len(result[0]))
         bfs_nodes.append(result[1])
@@ -88,6 +88,7 @@ def driver_strategy(strategy):
             puzzle = NPuzzle(8,g=Manhattan.g, h = Manhattan.h)
         else:
             puzzle = NPuzzle(8,g=DepthFirst.g, h = DepthFirst.h)
+        # result = graph_search(puzzle,verbose=True)
         result = graph_search(puzzle)
         time_spent = t.elapsed_s()
         length.append(len(result[0]))
@@ -113,3 +114,4 @@ def driver_multiprocessing():
     p_man.join()
 if __name__ == '__main__':
     driver_multiprocessing()
+    # driver()

@@ -79,6 +79,7 @@ def graph_search(problem, verbose=False, debug=False):
     node = initial_node
     board = problem.initial
     solved = board.solved()
+
     while(not solved):
         newNodes = node.expand(problem)
         #Insert all new nodes into queues and explored
@@ -101,6 +102,20 @@ def graph_search(problem, verbose=False, debug=False):
 
     # second = (time.time() - start)
     actions = node.path()
+    solutions = node.solution()
+    if verbose:
+        if len(solutions)==0:
+            print("No solution found")
+        else:
+            for k,v in enumerate(actions):
+                if k == 0:
+                    print("Solution in {} moves".format(len(actions)-1))
+                    print("Initial state")
+                else:
+                    print("Move {} -  {}".format(k,solutions[k-1]))
+                print(v.state)
+        # for item in actions:
+        #     print(item)
     # actions = [a_node.action for a_node in node.path() if a_node.action]
     # return (actions, node_num, second)
     return (actions, node_num)
