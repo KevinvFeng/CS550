@@ -54,35 +54,55 @@ def Game(red=human.Strategy, black=tonto.Strategy,
     blackPlayer = black('b', checkerboard.CheckerBoard, maxplies)
 
     turn = True if firstmove == 0 else False
-
+    if verbose:
+        clock = Timer()
+    move_cnt= 0
     while not gameboard.is_terminal()[0]:
+        move_cnt+=1
         if turn:
-            (_,move) = redPlayer.play(gameboard)
-            gameboard = gameboard.move(move,verbose=verbose)
+            if verbose:
+                gameboard = verboseMode(redPlayer,gameboard,clock)
+            else:
+                gameboard = ClearMode(redPlayer,gameboard)
             turn = not turn
         else:
-            (_,move) = blackPlayer.play(gameboard)
-            gameboard = gameboard.move(move,verbose=verbose)
+            if verbose:
+                gameboard = verboseMode(blackPlayer,gameboard,clock)
+            else:
+                gameboard = ClearMode(blackPlayer,gameboard)
             turn = not turn
 
-    return gameboard.is_terminal()
+    if verbose:
+        print('Final board')
+        print(gameboard)
+        winner = gameboard.is_terminal()
+        if not winner[1]:
+            print('Game is a draw')
+        else:
+            print('Winner is', winner[1])
 
-
-
-
-    # while not gameboard.is_terminal()[0]:
-    #     if firstmove==0: # Red
-    #         (gameboard,_) = redPlayer.play(gameboard)
-    #         (gameboard,_) = blackPlayer.play(gameboard)
-    #     else: # 1 (Black)
-    #         (gameboard,_) = blackPlayer.play(gameboard)
-    #         (gameboard,_) = redPlayer.play(gameboard)
-    
-    # return gameboard.is_terminal()
-
-
+    return gameboard
     # raise NotImplemented
-    
+
+def verboseMode(player, gameboard, clock):
+    print('Player {} turn'.format(player.maxplayer))
+    print(gameboard)
+    move_clock = Timer()
+    (_,move) = player.play(gameboard)
+    elapsed_move = move_clock.elapsed_s()
+    elapsed_all = clock.elapsed_min()
+    print('Move ', '{:-5}'.format(gameboard.movecount),'by {}:'.format(player.maxplayer),gameboard.get_action_str(move), 'Result:')
+    gameboard = gameboard.move(move)
+    print(gameboard)
+    print('Pawn/King count: r {} R {} b {} B {}'.format(gameboard.pawnsN[0], gameboard.kingsN[0], gameboard.pawnsN[1], gameboard.kingsN[1]))
+    print('Move: {:.3} s, Game: {:.4} min\n'.format(elapsed_move, elapsed_all))
+    return gameboard
+
+def ClearMode(palyer, gameboard):
+    (_,move) = palyer.play(gameboard)
+    gameboard = gameboard.move(move)
+    return gameboard
+
             
 if __name__ == "__main__":
     #Game(init=boardlibrary.boards["multihop"])
