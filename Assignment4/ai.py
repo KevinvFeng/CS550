@@ -12,7 +12,6 @@ class Strategy(abstractstrategy.Strategy):
         "Return the utility of the specified board"
         playerId = board.playeridx(self.maxplayer)
         otherId = board.playeridx(self.minplayer)
-        # return board.pawnsN[playerId] + board.kingsN[playerId]*4 - board.pawnsN[otherId] - board.kingsN[otherId]*4
         return board.pawnsN[playerId] + board.kingsN[playerId]*4 - board.pawnsN[otherId] - board.kingsN[otherId]*4
         
         # raise NotImplementedError("Subclass must implement")
@@ -24,6 +23,12 @@ class Strategy(abstractstrategy.Strategy):
         determined via a game tree search (e.g. minimax with alpha-beta
         pruning).
         """
+        print(self.maxplayer,' thinking using Alpha-Beta pruning strategy...')
+
+        # result =  self.maxValue(board,0, float("-inf"), float("inf"))
+        # print('Utility:', result[0])
+        # return (board.move(result[1]), result[1])
+
         action =  self.maxValue(board,0, float("-inf"), float("inf"))[1]
         return (board.move(action), action)
 
