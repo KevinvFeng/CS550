@@ -91,8 +91,11 @@ def verboseMode(player, gameboard, clock):
     (_,move) = player.play(gameboard)
     elapsed_move = move_clock.elapsed_s()
     elapsed_all = clock.elapsed_min()
-    print('Move ', '{:-5}'.format(gameboard.movecount),'by {}:'.format(player.maxplayer),gameboard.get_action_str(move), 'Result:')
-    gameboard = gameboard.move(move)
+    if not move:
+        print('Move \'None\'','by {}:'.format(player.maxplayer),' None ', 'Result:')
+    else:
+        print('Move ', '{:-5}'.format(gameboard.movecount),'by {}:'.format(player.maxplayer),gameboard.get_action_str(move), 'Result:')
+        gameboard = gameboard.move(move)
     print(gameboard)
     print('Pawn/King count: r {} R {} b {} B {}'.format(gameboard.pawnsN[0], gameboard.kingsN[0], gameboard.pawnsN[1], gameboard.kingsN[1]))
     print('Move: {:.3} s, Game: {:.4} min\n'.format(elapsed_move, elapsed_all))
@@ -100,12 +103,13 @@ def verboseMode(player, gameboard, clock):
 
 def ClearMode(palyer, gameboard):
     (_,move) = palyer.play(gameboard)
-    gameboard = gameboard.move(move)
+    if move:
+        gameboard = gameboard.move(move)
     return gameboard
 
             
 if __name__ == "__main__":
-    #Game(init=boardlibrary.boards["multihop"])
+    # Game(init=boardlibrary.boards["multihop"])
     #Game(init=boardlibrary.boards["StrategyTest1"])
     #Game(init=boardlibrary.boards["EndGame1"], firstmove = 1)
     Game()

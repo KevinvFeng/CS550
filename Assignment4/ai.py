@@ -24,13 +24,11 @@ class Strategy(abstractstrategy.Strategy):
         pruning).
         """
         print(self.maxplayer,' thinking using Alpha-Beta pruning strategy...')
-
-        # result =  self.maxValue(board,0, float("-inf"), float("inf"))
-        # print('Utility:', result[0])
-        # return (board.move(result[1]), result[1])
-
         action =  self.maxValue(board,0, float("-inf"), float("inf"))[1]
-        return (board.move(action), action)
+        if not action:
+            return (board, action)
+        else:
+            return (board.move(action), action)
 
     def maxValue(self, board,  depth, alpha, beta):
         if depth >= self.maxplies:
@@ -42,7 +40,7 @@ class Strategy(abstractstrategy.Strategy):
             for action in actions:
                 newBoard = board.move(action)
                 val = max(val, self.minValue(newBoard, depth+1, alpha, beta)[0])
-                if val > alpha:
+                if val >= alpha:
                     move = action
                 if val >= beta:
                     break
@@ -54,13 +52,13 @@ class Strategy(abstractstrategy.Strategy):
         if depth >= self.maxplies:
             return (self.utility(board),None)
         else:
-            actions = board.get_actions(self.maxplayer)
+            actions = board.get_actions(self.minplayer)
             val = float('inf')
             move = None
             for action in actions:
                 newBoard = board.move(action)
                 val = min(val, self.maxValue(newBoard, depth+1, alpha, beta)[0])
-                if val > beta:
+                if val >= beta:
                     move = action
                 if val <= alpha:
                     break
