@@ -30,7 +30,7 @@ def revise(csp, Xi, Xj):
     domains = csp.curr_domains[Xi]
     for d_val in domains:
         if csp.nconflicts(Xi,d_val, assignment):
-            csp.curr_domains[Xi].remove(d_val)
+            csp.prune(Xi, d_val, None)
             revised= True
     return revised
 
