@@ -34,6 +34,7 @@ class CSP(Problem):
     The following methods are used only by graph_search and tree_search:
         actions(state)          Return a list of actions
         result(state, action)   Return a successor of state
+        result(state, action)   Return a successor of state
         goal_test(state)        Return true if all constraints satisfied
     The following are just for debugging purposes:
         nassigns                Slot: tracks the number of assignments made
